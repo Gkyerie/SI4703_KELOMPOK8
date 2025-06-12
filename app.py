@@ -297,6 +297,57 @@ if df is not None and models and scaler is not None and model_loading_success:
         except Exception as e:
             st.error(f"Error applying Decision Tree Regression: {e}")
 
+    # --- Perbandingan Performa Model Regresi ---
+    st.subheader("Perbandingan Performa Model Regresi")
+
+    # Tampilkan metrik performa
+    st.markdown(f"""
+    **R² Score Linear Regression**: `{linreg_r2:.4f}`  
+    **RMSE Linear Regression**: `{linreg_rmse:.2f}`
+
+    **R² Score Decision Tree**: `{dt_r2:.4f}`  
+    **RMSE Decision Tree**: `{dt_rmse:.2f}`
+    """)
+
+    # Analisis performa
+    st.markdown("#### Analisis Performa:")
+    if dt_r2 > linreg_r2:
+        st.write("- Model Decision Tree memiliki akurasi (R²) yang lebih tinggi.")
+    else:
+        st.write("- Model Linear Regression memiliki akurasi (R²) yang lebih tinggi.")
+
+    if dt_rmse < linreg_rmse:
+        st.write("- Model Decision Tree menghasilkan error (RMSE) yang lebih kecil.")
+    else:
+        st.write("- Model Linear Regression menghasilkan error (RMSE) yang lebih kecil.")
+
+    # Visualisasi Perbandingan R² dan RMSE
+    st.markdown("#### Visualisasi Perbandingan R² dan RMSE")
+    import matplotlib.pyplot as plt
+
+    models = ['Linear Regression', 'Decision Tree']
+    r2_scores = [linreg_r2, dt_r2]
+    rmse_scores = [linreg_rmse, dt_rmse]
+
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Bar plot R²
+    axs[0].bar(models, r2_scores, color=['#4a90e2', '#f5a623'])
+    axs[0].set_title('R² Score')
+    axs[0].set_ylabel('R²')
+    axs[0].set_ylim(0, 1)
+    axs[0].grid(True)
+
+    # Bar plot RMSE
+    axs[1].bar(models, rmse_scores, color=['#4a90e2', '#f5a623'])
+    axs[1].set_title('RMSE')
+    axs[1].set_ylabel('RMSE')
+    axs[1].grid(True)
+
+    plt.suptitle('Perbandingan Performa Model')
+    st.pyplot(fig)
+    plt.close(fig)
+
     # --- Prediction Section with Button ---
     st.subheader("Make a Prediction")
     st.write("Enter a value for 'Rata-rata Lama Sekolah' to get predictions.")
